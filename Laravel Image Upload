@@ -1,0 +1,39 @@
+=========Single Image Upload Code============
+
+if(!empty($req->file('profile_image'))){
+    $image = ProfileController::imageUpload($req->file('profile_image'),'/uploads/profile/');
+}else{
+    $image = '';
+}
+
+public function imageUpload($fileName,$folder='',$url='')
+{       
+
+    $name = rand(111111,999999).'.'.$fileName->getClientOriginalExtension();
+    //$name = str_random(6).'_'.$fileName->getClientOriginalName();
+    $destinationPath = public_path($folder);
+    $fileName->move($destinationPath,$name);
+    return $name;
+}
+
+=========Multiple Image Upload Code============
+
+if(!empty($req->file('image_multi'))){
+    $image_multis = AdminController::imageUploadMulti($req->file('image_multi'),'/uploads/user/');
+    $data['multi_image'] = implode(",", $image_multis);
+}
+        
+public function imageUploadMulti($fileName,$folder='',$url='')
+{       
+    $hole_images=array();
+
+    foreach($fileName as $file)
+    {
+        $name = time().'_'.$file->getClientOriginalName();
+        //$name = time().'.'.$file->getClientOriginalExtension();
+        $destinationPath = public_path($folder);
+        $file->move($destinationPath,$name);
+        $hole_images[]=$name;           
+    }
+    return $hole_images;
+}
